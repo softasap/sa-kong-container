@@ -1,0 +1,43 @@
+---
+  # Portions come from https://github.com/ansible/nginx-container as the source of ideas
+
+  - block:
+
+    - name: Check /usr/bin/dumb-init exists
+      stat: path="/usr/bin/dumb-init"
+      register: dumb_init_present
+
+
+    - name: Container Setup | Install dumb init
+      get_url:
+        url: https://github.com/Yelp/dumb-init/releases/download/v{{ dumb_init_version }}/dumb-init_{{ dumb_init_version }}_amd64
+        dest: /usr/bin/dumb-init
+        owner: root
+        group: root
+        mode: 0775
+        validate_certs: False
+      when: dumb_init_present.stat.exists == False
+
+    when: container_init == "standalone-dumb-init"
+
+  - name: Container Setup | Update container user
+    user:
+      name: "{{container_user}}"
+      uid: "{{container_uid}}"
+      group: root
+      createhome: no
+    when: ansible_os_family == "Debian"
+
+  - name: Container Setup | Update container group
+    group: name="{{container_group}}" gid="{{container_gid}}" state="present"
+    when: ansible_os_family == "Debian"
+
+
+  - name: Container Setup | Update container user
+    shell: "deluser {{container_user}} || true && adduser -u {{container_uid}} -G root -H -D {{container_user}}"
+    when: ansible_os_family == "Alpine"
+
+  - name: "Container Setup | Create nginx group also - addgroup -g {{container_gid}} -S nginx"
+    shell: "addgroup -g {{container_gid}} -S nginx"
+    when: ansible_os_family == "Alpine"
+

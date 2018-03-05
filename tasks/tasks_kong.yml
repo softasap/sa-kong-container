@@ -1,0 +1,34 @@
+---
+  - name: apk add --no-cache --virtual .build-deps wget tar ca-certificates
+    shell: apk add --no-cache --virtual .build-deps wget tar ca-certificates
+
+  - name: apk add --no-cache libgcc openssl pcre perl tzdata
+    shell: apk add --no-cache libgcc openssl pcre perl tzdata
+
+  - name: wget -O kong.tar.gz "https://bintray.com/kong/kong-community-edition-alpine-tar/download_file?file_path=kong-community-edition-$KONG_VERSION.apk.tar.gz"
+    shell: wget -O kong.tar.gz "https://bintray.com/kong/kong-community-edition-alpine-tar/download_file?file_path=kong-community-edition-{{kong_version}}.apk.tar.gz"
+
+  - name: echo "$KONG_SHA256 *kong.tar.gz" | sha256sum -c -
+    shell: echo "{{kong_sha256}} *kong.tar.gz" | sha256sum -c -
+
+  - name: tar -xzf kong.tar.gz -C /tmp
+    shell: tar -xzf kong.tar.gz -C /tmp
+
+  - name: rm -f kong.tar.gz
+    shell: rm -f kong.tar.gz
+
+  - name: cp -R /tmp/usr /
+    shell: cp -R /tmp/usr /
+
+  - name: rm -rf /tmp/usr 
+    shell: rm -rf /tmp/usr 
+
+  - name: cp -R /tmp/etc / 
+    shell: cp -R /tmp/etc /
+
+  - name: rm -rf /tmp/etc
+    shell: rm -rf /tmp/etc
+
+  - name: apk del .build-deps
+    shell: apk del .build-deps
+

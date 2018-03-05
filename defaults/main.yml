@@ -1,0 +1,48 @@
+---
+# defaults file for sa-kong-container
+
+remote_user: root # supress sudo issues for unprepared roles
+
+kong_version: "0.12.2"
+kong_sha256: "1ed20184d1f442662cf3197da208267201966d339c687f7a034f520603f3492b"
+
+container_user: nginx
+container_uid: 1000
+container_group: "{{container_user}}"
+container_gid: "{{container_uid}}"
+container_init: "standalone-dumb-init" # custom, dumb-init, phusion-init if you are based on sa-container-bootstrap
+dumb_init_version: "1.2.0"
+
+nginx_pid_dir: /run/nginx
+nginx_static_dir: /static
+
+nginx_asset_dirs: [] # directories to be copied inside docker container
+nginx_container_asset_dirs: [] #directories already mapped inside docker container during build
+
+nginx_directories:
+    - "{{ nginx_static_dir }}"
+    - "{{ nginx_pid_dir }}"
+    - /var/log/nginx
+    - /var/lib/nginx
+
+nginx_conf_properties:
+  - {
+      regexp: "^daemon *",
+      line: "daemon off;",
+      insertbefore: "BOF"
+    }
+  - {
+      regexp: "^worker_processes *",
+      line: "worker_processes auto;",
+      insertbefore: "BOF"
+    }
+  - {
+      regexp: "^pid *",
+      line: "pid {{nginx_pid_dir}}/nginx.pid;",
+      insertbefore: "BOF"
+    }
+
+
+nginx_alpine_repo_tag: "@edge"
+
+
