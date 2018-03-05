@@ -1,10 +1,45 @@
 ---
 # defaults file for sa-kong-container
 
+role_dir: "{{role_path}}"
+
 remote_user: root # supress sudo issues for unprepared roles
 
 kong_version: "0.12.2"
 kong_sha256: "1ed20184d1f442662cf3197da208267201966d339c687f7a034f520603f3492b"
+
+kong_nginx_template: default_nginx.template
+
+kong_admin_http: "0.0.0.0:8001"
+kong_admin_https: "127.0.0.1:8444"
+kong_proxy_http: "0.0.0.0:8000"
+kong_proxy_https: "0.0.0.0:8443"
+
+kong_default_properties:
+  - {regexp: "^#?proxy_listen  *", line: "proxy_listen = {{kong_proxy_http}}"}
+  - {regexp: "^#?proxy_listen_ssl  *", line: "proxy_listen_ssl = {{kong_proxy_https}}"}
+  - {regexp: "^#?admin_listen  *", line: "admin_listen = {{kong_admin_http}}"}
+  - {regexp: "^#?admin_listen_ssl  *", line: "admin_listen_ssl = {{kong_admin_https}}"}
+  - {regexp: "^#?database  *", line: "database = {{kong_db}}"}
+  - {regexp: "^#?pg_host  *", line: "pg_host = {{kong_pg_host}}"}
+  - {regexp: "^#?pg_port  *", line: "pg_port = {{kong_pg_port}}"}
+  - {regexp: "^#?pg_user  *", line: "pg_user = {{kong_pg_user}}"}
+  - {regexp: "^#?pg_password  *", line: "pg_password = {{kong_pg_password}}"}
+  - {regexp: "^#?pg_database  *", line: "pg_database = {{kong_pg_database}}"}
+  - {regexp: "^#?pg_ssl  *", line: "pg_ssl = {{kong_pg_ssl}}"}
+  - {regexp: "^#?pg_ssl_verify  *", line: "pg_ssl_verify = {{kong_pg_ssl_verify}}"}
+
+kong_properties: []
+
+kong_db: postgres
+kong_pg_host: "kong_db"
+kong_pg_port: 5432
+kong_pg_user: kong
+kong_pg_password: kong
+kong_pg_database: kong
+kong_pg_ssl: off
+kong_pg_ssl_verify: off
+
 
 container_user: nginx
 container_uid: 1000

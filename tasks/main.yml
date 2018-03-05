@@ -3,4 +3,4 @@
 
   - include: "tasks_kong.yml"
 
-#  - include: "tasks_kong_docker.yml"
+  - include: "tasks_kong_docker.yml"
