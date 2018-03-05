@@ -104,6 +104,18 @@ function _hasGitChanges() {
 }
 
 
+#=================================================================
+# Dummy helpers for makefile
+function _getUpDirLevel2() {
+         basename ${PWD%/*}
+}
+
+function getUpDirLevel2() {
+        result=$(_getUpDirLevel2)
+        echo $result
+}
+
+
 
 # ===================================================
 # gitflow release helpers https://github.com/Voronenko/gitflow-release
