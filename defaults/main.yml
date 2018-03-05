@@ -1,0 +1,88 @@
+---
+# defaults file for sa-kong-container
+
+role_dir: "{{role_path}}"
+
+remote_user: root # supress sudo issues for unprepared roles
+
+kong_version: "0.12.2"
+kong_sha256: "1ed20184d1f442662cf3197da208267201966d339c687f7a034f520603f3492b"
+
+option_plugin_middleman: true # install custom middleman plugin
+
+kong_plugins_path: /usr/local/share/lua/5.1/kong/plugins
+
+kong_nginx_template: default_nginx.template
+
+kong_admin_http: "0.0.0.0:8001"
+kong_admin_https: "127.0.0.1:8444"
+kong_proxy_http: "0.0.0.0:8000"
+kong_proxy_https: "0.0.0.0:8443"
+
+kong_default_properties:
+  - {regexp: "^#?proxy_listen  *", line: "proxy_listen = {{kong_proxy_http}}"}
+  - {regexp: "^#?proxy_listen_ssl  *", line: "proxy_listen_ssl = {{kong_proxy_https}}"}
+  - {regexp: "^#?admin_listen  *", line: "admin_listen = {{kong_admin_http}}"}
+  - {regexp: "^#?admin_listen_ssl  *", line: "admin_listen_ssl = {{kong_admin_https}}"}
+  - {regexp: "^#?database  *", line: "database = {{kong_db}}"}
+  - {regexp: "^#?pg_host  *", line: "pg_host = {{kong_pg_host}}"}
+  - {regexp: "^#?pg_port  *", line: "pg_port = {{kong_pg_port}}"}
+  - {regexp: "^#?pg_user  *", line: "pg_user = {{kong_pg_user}}"}
+  - {regexp: "^#?pg_password  *", line: "pg_password = {{kong_pg_password}}"}
+  - {regexp: "^#?pg_database  *", line: "pg_database = {{kong_pg_database}}"}
+  - {regexp: "^#?pg_ssl  *", line: "pg_ssl = {{kong_pg_ssl}}"}
+  - {regexp: "^#?pg_ssl_verify  *", line: "pg_ssl_verify = {{kong_pg_ssl_verify}}"}
+  - {regexp: "^#?custom_plugins  *", line: "custom_plugins = middleman"}
+
+kong_properties: []
+
+kong_db: postgres
+kong_pg_host: "kong_db"
+kong_pg_port: 5432
+kong_pg_user: kong
+kong_pg_password: kong
+kong_pg_database: kong
+kong_pg_ssl: off
+kong_pg_ssl_verify: off
+
+
+container_user: nginx
+container_uid: 1000
+container_group: "{{container_user}}"
+container_gid: "{{container_uid}}"
+container_init: "standalone-dumb-init" # custom, dumb-init, phusion-init if you are based on sa-container-bootstrap
+dumb_init_version: "1.2.0"
+
+nginx_pid_dir: /run/nginx
+nginx_static_dir: /static
+
+nginx_asset_dirs: [] # directories to be copied inside docker container
+nginx_container_asset_dirs: [] #directories already mapped inside docker container during build
+
+nginx_directories:
+    - "{{ nginx_static_dir }}"
+    - "{{ nginx_pid_dir }}"
+    - /var/log/nginx
+    - /var/lib/nginx
+
+nginx_conf_properties:
+  - {
+      regexp: "^daemon *",
+      line: "daemon off;",
+      insertbefore: "BOF"
+    }
+  - {
+      regexp: "^worker_processes *",
+      line: "worker_processes auto;",
+      insertbefore: "BOF"
+    }
+  - {
+      regexp: "^pid *",
+      line: "pid {{nginx_pid_dir}}/nginx.pid;",
+      insertbefore: "BOF"
+    }
+
+
+nginx_alpine_repo_tag: "@edge"
+
+

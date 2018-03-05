@@ -1,0 +1,8 @@
+---
+# tasks file for sa-kong-container
+
+  - include: "tasks_kong.yml"
+
+  - include: "tasks_kong_plugins.yml"
+
+  - include: "tasks_kong_docker.yml"

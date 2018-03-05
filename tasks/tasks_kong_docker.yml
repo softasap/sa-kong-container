@@ -1,0 +1,69 @@
+---
+  # Portions come from https://github.com/ansible/nginx-container as the source of ideas
+
+  - block:
+
+    - name: Check /usr/bin/dumb-init exists
+      stat: path="/usr/bin/dumb-init"
+      register: dumb_init_present
+
+
+    - name: Container Setup | Install dumb init
+      get_url:
+        url: https://github.com/Yelp/dumb-init/releases/download/v{{ dumb_init_version }}/dumb-init_{{ dumb_init_version }}_amd64
+        dest: /usr/bin/dumb-init
+        owner: root
+        group: root
+        mode: 0775
+        validate_certs: False
+      when: dumb_init_present.stat.exists == False
+
+    when: container_init == "standalone-dumb-init"
+
+  - name: Container Setup | Update container user
+    user:
+      name: "{{container_user}}"
+      uid: "{{container_uid}}"
+      group: root
+      createhome: no
+    when: ansible_os_family == "Debian"
+
+  - name: Container Setup | Update container group
+    group: name="{{container_group}}" gid="{{container_gid}}" state="present"
+    when: ansible_os_family == "Debian"
+
+
+  - name: Container Setup | Update container user
+    shell: "deluser {{container_user}} || true && adduser -u {{container_uid}} -G root -H -D {{container_user}}"
+    when: ansible_os_family == "Alpine"
+
+  - name: "Container Setup | Create nginx group also - addgroup -g {{container_gid}} -S nginx"
+    shell: "addgroup -g {{container_gid}} -S nginx"
+    when: ansible_os_family == "Alpine"
+
+  - name: Template kong init
+    template: src="{{role_dir}}/templates/kong_init.sh.j2" dest="/docker-entrypoint" mode="u=rwx,g=rx,o=rx"
+
+
+  - name: Kong | initialize kong config
+    copy:
+      src: "/etc/kong/kong.conf.default"
+      dest: /etc/kong/kong.conf
+      remote_src: yes
+      force: no
+      group: root
+      mode: 0644
+      owner: root
+
+  - name: Kong | Patch default settings /etc/kong/kong.conf
+    lineinfile: dest=/etc/kong/kong.conf  regexp="{{item.regexp}}" line="{{item.line}}" insertafter="{{item.insertafter | default('EOF')}}"
+    with_items: "{{kong_default_properties | default([])}}"
+    tags:
+     - kong
+
+  - name: Kong | Patch settings /etc/kong/kong.conf
+    lineinfile: dest=/etc/kong/kong.conf  regexp="{{item.regexp}}" line="{{item.line}}" insertafter="{{item.insertafter | default('EOF')}}"
+    with_items: "{{kong_properties | default([])}}"
+    tags:
+     - kong
+

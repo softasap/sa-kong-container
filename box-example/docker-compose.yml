@@ -1,0 +1,25 @@
+---
+version: '3.1'
+services:
+  kong_db:
+    image: postgres
+    environment:
+      POSTGRES_DB: kong
+      POSTGRES_USER: kong
+      POSTGRES_PASSWORD: kong
+    ports:
+     - 5432:5432
+  kong:
+    image: sa-kong-container-kong:latest
+    ports:
+      - 8000:8000
+      - 8443:8443
+      - 8001:8001
+      - 8444:8444
+    command: ["/usr/local/openresty/nginx/sbin/nginx", "-c", "/usr/local/kong/nginx.conf", "-p", "/usr/local/kong/"]
+    entrypoint: /docker-entrypoint
+ 
+#    command: ['/usr/bin/dumb-init', 'nginx', '-c', '/etc/nginx/nginx.conf']
+#    volumes:
+#    - "${PWD}/standalone-fallback/files/conf/demo.conf:/etc/nginx/sites-enabled/demo.conf"
+#    - "${PWD}/standalone-fallback/files:/www"

@@ -1,0 +1,21 @@
+version: "2"
+settings:
+  conductor_base: alpine:3.5
+  volumes:
+   - temp-space:/tmp   # Used to copy static content between containers
+
+services:
+   kong:
+     from: alpine:3.6
+     container_name: kong
+     entrypoint: /docker-entrypoint
+     expose:
+       - "8000"
+     roles:
+       - {
+           role: "softasap.sa-kong-container"
+         }
+
+volumes:
+  temp-space:
+    docker: {}
