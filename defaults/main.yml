@@ -8,6 +8,10 @@ remote_user: root # supress sudo issues for unprepared roles
 kong_version: "0.12.2"
 kong_sha256: "1ed20184d1f442662cf3197da208267201966d339c687f7a034f520603f3492b"
 
+option_plugin_middleman: true # install custom middleman plugin
+
+kong_plugins_path: /usr/local/share/lua/5.1/kong/plugins
+
 kong_nginx_template: default_nginx.template
 
 kong_admin_http: "0.0.0.0:8001"
@@ -28,6 +32,7 @@ kong_default_properties:
   - {regexp: "^#?pg_database  *", line: "pg_database = {{kong_pg_database}}"}
   - {regexp: "^#?pg_ssl  *", line: "pg_ssl = {{kong_pg_ssl}}"}
   - {regexp: "^#?pg_ssl_verify  *", line: "pg_ssl_verify = {{kong_pg_ssl_verify}}"}
+  - {regexp: "^#?custom_plugins  *", line: "custom_plugins = middleman"}
 
 kong_properties: []
 
