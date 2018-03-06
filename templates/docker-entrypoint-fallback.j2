@@ -1,0 +1,20 @@
+#!{{bin_dir}}/dumb-init /bin/sh
+
+##
+##  --main_command              The main command to run. (default: runit)
+##
+##  --skip-startup-files        Skip running {{container_init_directory}}/* and /etc/rc.local
+##
+##  --skip-runit                Do not run runit services
+
+echo "Running any available init scripts:"
+find {{container_init_directory}} -name "*.sh" -print0 | while read -d $'\0' file
+do
+  echo " -- Running $file..."
+  chmod +x $file
+  $file
+done
+
+echo Running kong ....
+
+/etc/service/kong/run

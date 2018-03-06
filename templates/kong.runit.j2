@@ -1,0 +1,3 @@
+#!/bin/sh
+KONG_NGINX_CONF=${KONG_NGINX_CONF-/usr/local/kong/nginx.conf}
+exec /usr/local/openresty/nginx/sbin/nginx -c $KONG_NGINX_CONF -p /usr/local/kong/

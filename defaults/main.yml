@@ -3,6 +3,8 @@
 
 role_dir: "{{role_path}}"
 
+application_service: kong
+
 remote_user: root # supress sudo issues for unprepared roles
 
 kong_version: "0.12.2"
@@ -46,12 +48,24 @@ kong_pg_ssl: off
 kong_pg_ssl_verify: off
 
 
+# ============ SA-CONTAINER-BOOTSTRAP compatibility ====================
+
 container_user: nginx
 container_uid: 1000
 container_group: "{{container_user}}"
 container_gid: "{{container_uid}}"
-container_init: "standalone-dumb-init" # custom, dumb-init, phusion-init if you are based on sa-container-bootstrap
+container_init: "dumb-init" # custom, dumb-init, phusion-init if you are based on sa-container-bootstrap
 dumb_init_version: "1.2.0"
+
+container_init_directory: /etc/my_init.d
+container_environment_directory: /etc/container_environment
+
+runsvdir_binary: "/usr/bin/runsvdir"
+sv_binary: "/usr/bin/sv"
+bin_dir: "/usr/bin"
+
+
+# ============ /SA-CONTAINER-BOOTSTRAP compatibility ====================
 
 nginx_pid_dir: /run/nginx
 nginx_static_dir: /static
@@ -84,5 +98,3 @@ nginx_conf_properties:
 
 
 nginx_alpine_repo_tag: "@edge"
-
-
