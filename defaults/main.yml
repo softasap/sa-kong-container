@@ -64,6 +64,7 @@ runsvdir_binary: "/usr/bin/runsvdir"
 sv_binary: "/usr/bin/sv"
 bin_dir: "/usr/bin"
 
+alpine_repo_tag: "@edge"
 
 # ============ /SA-CONTAINER-BOOTSTRAP compatibility ====================
 

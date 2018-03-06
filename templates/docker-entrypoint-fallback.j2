@@ -1,4 +1,5 @@
-#!{{bin_dir}}/dumb-init /bin/sh
+#!/bin/sh
+#  !{{bin_dir}}/dumb-init /bin/sh
 
 ##
 ##  --main_command              The main command to run. (default: runit)
@@ -7,13 +8,14 @@
 ##
 ##  --skip-runit                Do not run runit services
 
-echo "Running any available init scripts:"
-find {{container_init_directory}} -name "*.sh" -print0 | while read -d $'\0' file
-do
-  echo " -- Running $file..."
-  chmod +x $file
-  $file
-done
+
+# echo "Running any available init scripts:"
+# find {{container_init_directory}} -name "*.sh" -print0 | while read -d $'\0' file
+# do
+#   echo " -- Running $file..."
+#   chmod +x $file
+#   $file
+# done
 
 echo Running kong ....
 
