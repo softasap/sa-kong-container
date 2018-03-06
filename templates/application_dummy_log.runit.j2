@@ -1,0 +1,8 @@
+#!/bin/sh
+
+exec 2>&1
+
+mkdir -p /var/log/{{application_service}}
+
+exec tail -F /var/log/{{application_service}}/current > /dev/stdout
+

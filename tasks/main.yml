@@ -1,6 +1,19 @@
 ---
 # tasks file for sa-kong-container
 
+  - block:
+    - name: Alpine Detect version
+      shell: cat /etc/alpine-release  | awk 'BEGIN {FS="."}{print $1"."$2}'
+      register: alpine_version
+
+    - set_fact:
+        container_alpine_version: "{{alpine_version.stdout}}"
+        runsvdir_binary: "/sbin/runsvdir"
+        sv_binary: "/sbin/sv"
+        bin_dir: "/sbin"
+        
+    when: ansible_distribution in ["Alpine"]
+
   - include: "tasks_kong.yml"
 
   - include: "tasks_kong_plugins.yml"

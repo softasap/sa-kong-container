@@ -12,9 +12,19 @@ services:
      expose:
        - "8000"
      roles:
-       - {
+      - {
+          role: "softasap.sa-container-bootstrap",
+          option_container_cron: false,
+          option_container_sshd: false,
+          option_container_sshd_enabled: false,
+          option_container_syslog_ng: false,
+          container_init: "phusion-init", # "dumb-init" "tini-init"
+          container_svc: "runit" # "supervisord"
+        }
+
+      - {
            role: "softasap.sa-kong-container"
-         }
+        }
 
 volumes:
   temp-space:

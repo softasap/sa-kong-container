@@ -5,15 +5,16 @@
     #    shell: luarocks install middleman
 
     - name: ensure git
-      shell: apk update && apk add git
+      shell: apk update && apk add git{{alpine_repo_tag}}
 
-    - name: Clone middleman 
+    - name: Clone middleman
       shell: "cd {{kong_plugins_path}} && git clone https://github.com/pantsel/kong-middleman-plugin middleman"
 
     - name: Build middleman
       shell: "cd {{kong_plugins_path}}/middleman && luarocks make *.rockspec"
 
-    - name: remove git
-      shell: apk del git
+    # //TODO 
+    # - name: remove git
+    #   shell: apk del git{{alpine_repo_tag}}
 
     when: option_plugin_middleman

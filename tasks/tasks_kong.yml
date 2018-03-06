@@ -1,9 +1,9 @@
 ---
   - name: apk add --no-cache --virtual .build-deps wget tar ca-certificates
-    shell: apk add --no-cache --virtual .build-deps wget tar ca-certificates
+    shell: apk add --no-cache --virtual .build-deps{{alpine_repo_tag}} wget{{alpine_repo_tag}} tar{{alpine_repo_tag}} ca-certificates{{alpine_repo_tag}}
 
   - name: apk add --no-cache libgcc openssl pcre perl tzdata
-    shell: apk add --no-cache libgcc openssl pcre perl tzdata
+    shell: apk add --no-cache libgcc{{alpine_repo_tag}} openssl{{alpine_repo_tag}} pcre{{alpine_repo_tag}} perl{{alpine_repo_tag}} tzdata{{alpine_repo_tag}}
 
   - name: wget -O kong.tar.gz "https://bintray.com/kong/kong-community-edition-alpine-tar/download_file?file_path=kong-community-edition-$KONG_VERSION.apk.tar.gz"
     shell: wget -O kong.tar.gz "https://bintray.com/kong/kong-community-edition-alpine-tar/download_file?file_path=kong-community-edition-{{kong_version}}.apk.tar.gz"
@@ -20,15 +20,45 @@
   - name: cp -R /tmp/usr /
     shell: cp -R /tmp/usr /
 
-  - name: rm -rf /tmp/usr 
-    shell: rm -rf /tmp/usr 
+  - name: rm -rf /tmp/usr
+    shell: rm -rf /tmp/usr
 
-  - name: cp -R /tmp/etc / 
+  - name: cp -R /tmp/etc /
     shell: cp -R /tmp/etc /
 
   - name: rm -rf /tmp/etc
     shell: rm -rf /tmp/etc
 
-  - name: apk del .build-deps
-    shell: apk del .build-deps
+  # // TODO
+  # - name: apk del .build-deps
+  #   shell: apk del .build-deps
 
+  - name: KONG | Instruct kong to create directory structure
+    shell: kong prepare -p "/usr/local/kong"
+
+  - name: Kong | Override default nginx.conf to support statics
+    template: src="{{role_path}}/templates/kong_nginx_extended.conf.j2" dest="/usr/local/kong/nginx.conf"
+
+  - name: KONG | Ensure init directory exists
+    file: path="{{container_init_directory}}" state="directory"
+
+  - name: KONG | Template initialization script
+    template: src="{{role_path}}/templates/kong_init.sh.j2" dest="{{container_init_directory}}/00_init_kong.sh" mode="u=rwx,g=rx,o=rx"
+
+  - name: RUNIT | Creating /etc/service/{{application_service}}
+    file: path="/etc/service/{{application_service}}" state="directory"
+
+  - name: RUNIT | Template  /etc/service/{{application_service}}/run
+    template: src="{{role_dir}}/templates/{{application_service}}.runit.j2" dest="/etc/service/{{application_service}}/run" mode="u=rwx,g=rx,o=rx"
+
+  - name: RUNIT | Creating /etc/service/{{application_service}}/log
+    file: path="/etc/service/{{application_service}}/log" state="directory"
+
+  - name: RUNIT | Template  /etc/service/{{application_service}}/log/run
+    template: src="{{role_dir}}/templates/application_log.runit.j2" dest="/etc/service/{{application_service}}/log/run" mode="u=rwx,g=rx,o=rx"
+
+  - name: RUNIT | Creating /var/log/{{application_service}}
+    file: path="/var/log/{{application_service}}" state="directory"
+
+  - name: RUNIT | Template  /var/log/{{application_service}}/config
+    template: src="{{role_dir}}/templates/config.j2" dest="/var/log/{{application_service}}/config" mode="u=rw,g=r,o=r"

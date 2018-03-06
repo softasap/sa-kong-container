@@ -41,8 +41,18 @@
     shell: "addgroup -g {{container_gid}} -S nginx"
     when: ansible_os_family == "Alpine"
 
+  - name: Check if docker image is not provisioned with docker-entrypoint
+    shell: test -e /docker-entrypoint
+    register: docker_entrypoint_set
+    ignore_errors: true
+
   - name: Template kong init
-    template: src="{{role_dir}}/templates/kong_init.sh.j2" dest="/docker-entrypoint" mode="u=rwx,g=rx,o=rx"
+    template: src="{{role_dir}}/templates/docker-entrypoint-fallback.j2" dest="/docker-entrypoint" mode="u=rwx,g=rx,o=rx"
+    when: docker_entrypoint_set | failed
+
+  - name: Template kong init
+    shell: cat /docker-entrypoint
+    when: docker_entrypoint_set | failed
 
 
   - name: Kong | initialize kong config
@@ -66,4 +76,3 @@
     with_items: "{{kong_properties | default([])}}"
     tags:
      - kong
-
