@@ -42,11 +42,13 @@
     when: ansible_os_family == "Alpine"
 
   - name: Check if docker image is not provisioned with docker-entrypoint
-    shell: test -e /docker-entrypoint   
+    shell: test -e /docker-entrypoint
+    register: docker_entrypoint_set
+    ignore_errors: true
 
   - name: Template kong init
-    template: src="{{role_dir}}/templates/kong_init.sh.j2" dest="/docker-entrypoint" mode="u=rwx,g=rx,o=rx"
-
+    template: src="{{role_dir}}/templates/docker-entrypoint-fallback.j2" dest="/docker-entrypoint" mode="u=rwx,g=rx,o=rx"
+    when: docker_entrypoint_set | failed
 
   - name: Kong | initialize kong config
     copy:
