@@ -1,3 +1,6 @@
+[submodule "roles/sa-container-bootstrap"]
+        path = roles/softasap.sa-container-bootstrap
+        url = https://github.com/softasap/sa-container-bootstrap.git
 [submodule "roles/sa-kong-container"]
         path = roles/softasap.sa-kong-container
         url = https://github.com/softasap/sa-kong-container.git
