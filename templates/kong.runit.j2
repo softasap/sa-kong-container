@@ -1,6 +1,6 @@
 #!/bin/sh
 
-KONG_NGINX_CONF=${KONG_NGINX_CONF-/usr/local/kong/nginx.conf}
+KONG_NGINX_CONF=${KONG_NGINX_CONF:-/usr/local/kong/nginx.conf}
 
 exec 2>&1
 

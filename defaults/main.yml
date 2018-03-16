@@ -11,6 +11,7 @@ kong_version: "0.12.2"
 kong_sha256: "1ed20184d1f442662cf3197da208267201966d339c687f7a034f520603f3492b"
 
 option_plugin_middleman: true # install custom middleman plugin
+option_log_service: true
 
 kong_plugins_path: /usr/local/share/lua/5.1/kong/plugins
 
