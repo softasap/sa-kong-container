@@ -53,12 +53,16 @@
 
   - name: RUNIT | Creating /etc/service/{{application_service}}/log
     file: path="/etc/service/{{application_service}}/log" state="directory"
+    when: option_log_service
 
   - name: RUNIT | Template  /etc/service/{{application_service}}/log/run
     template: src="{{role_dir}}/templates/application_log.runit.j2" dest="/etc/service/{{application_service}}/log/run" mode="u=rwx,g=rx,o=rx"
+    when: option_log_service
 
   - name: RUNIT | Creating /var/log/{{application_service}}
     file: path="/var/log/{{application_service}}" state="directory"
+    when: option_log_service
 
   - name: RUNIT | Template  /var/log/{{application_service}}/config
     template: src="{{role_dir}}/templates/config.j2" dest="/var/log/{{application_service}}/config" mode="u=rw,g=r,o=r"
+    when: option_log_service

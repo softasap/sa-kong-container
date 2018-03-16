@@ -76,3 +76,19 @@
     with_items: "{{kong_properties | default([])}}"
     tags:
      - kong
+
+  - name: Kong | Clear log files
+    file:
+      path: "/usr/local/kong/logs/{{ item }}"
+      state: absent
+    with_items:
+      - access.log
+      - error.log
+      - admin_access.log
+
+  - name: Kong | Link log files to stdout
+    command: "ln -sf /dev/stdout /usr/local/kong/logs/{{ item }}"
+    with_items:
+      - access.log
+      - error.log
+      - admin_access.log
