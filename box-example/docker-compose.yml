@@ -9,6 +9,12 @@ services:
       POSTGRES_PASSWORD: kong
     ports:
      - 5432:5432
+    healthcheck:
+      test: 'echo "select 1" | psql -U kong kong || exit 1'
+      interval: 1m
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
   kong:
     image: sa-kong-container-kong:latest
     ports:
@@ -17,7 +23,16 @@ services:
       - 8001:8001
       - 8444:8444
     entrypoint: /docker-entrypoint
- 
+    links:
+      - kong_db
+    depends_on:
+      - kong_db
+    healthcheck:
+      test: 'curl -f http://localhost:8001/status || exit 1'
+      interval: 1m
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
 #    command: ['/usr/bin/dumb-init', 'nginx', '-c', '/etc/nginx/nginx.conf']
 #    volumes:
 #    - "${PWD}/standalone-fallback/files/conf/demo.conf:/etc/nginx/sites-enabled/demo.conf"
