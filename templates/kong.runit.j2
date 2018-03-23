@@ -1,7 +1,5 @@
 #!/bin/sh
 
-KONG_NGINX_CONF=${KONG_NGINX_CONF:-{{kong_daemon_config}}}
-
 exec 2>&1
 
-exec /usr/local/openresty/nginx/sbin/nginx -p /usr/local/kong -c $KONG_NGINX_CONF
+exec /usr/local/openresty/nginx/sbin/nginx -p /usr/local/kong -c {{kong_daemon_config}}
