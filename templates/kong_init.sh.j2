@@ -4,7 +4,5 @@ set -e
 # Disabling nginx daemon mode, in case if there was override in main config
 export KONG_NGINX_DAEMON="off"
 
-# Those will fail for case when db is already migrated
-/usr/local/bin/kong migrations up --yes || true
-
-exec "$@"
+# answer yes for unattended install
+/usr/local/bin/kong migrations up --yes
