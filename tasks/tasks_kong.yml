@@ -44,7 +44,7 @@
     file: path="{{container_init_directory}}" state="directory"
 
   - name: KONG | Template initialization script
-    template: src="{{role_path}}/templates/kong_init.sh.j2" dest="{{container_init_directory}}/00_init_kong.sh" mode="u=rwx,g=rx,o=rx"
+    template: src="{{role_path}}/templates/kong_init.sh.j2" dest="{{container_init_directory}}/30_init_kong.sh" mode="u=rwx,g=rx,o=rx"
 
   - name: RUNIT | Creating /etc/service/{{application_service}}
     file: path="/etc/service/{{application_service}}" state="directory"
