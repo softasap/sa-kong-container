@@ -37,14 +37,14 @@
     shell: kong prepare -p "/usr/local/kong"
 
   - name: Kong | Override default nginx.conf to support statics
-    template: src="{{kong_config_path}}" dest="{{kong_daemon_config}}"
+    template: src="{{kong_config_path}}" dest="{{kong_nginx_config}}"
     when: kong_config_path is defined
 
   - name: KONG | Ensure init directory exists
     file: path="{{container_init_directory}}" state="directory"
 
   - name: KONG | Template initialization script
-    template: src="{{role_path}}/templates/kong_init.sh.j2" dest="{{container_init_directory}}/00_init_kong.sh" mode="u=rwx,g=rx,o=rx"
+    template: src="{{role_path}}/templates/kong_init.sh.j2" dest="{{container_init_directory}}/30_init_kong.sh" mode="u=rwx,g=rx,o=rx"
 
   - name: RUNIT | Creating /etc/service/{{application_service}}
     file: path="/etc/service/{{application_service}}" state="directory"

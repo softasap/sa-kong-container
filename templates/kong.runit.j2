@@ -2,4 +2,4 @@
 
 exec 2>&1
 
-exec /usr/local/openresty/nginx/sbin/nginx -p /usr/local/kong -c {{kong_daemon_config}}
+exec /usr/local/bin/kong start -p /usr/local/kong -c /etc/kong/kong.conf --run-migrations ${KONG_START_OVERRIDES}
