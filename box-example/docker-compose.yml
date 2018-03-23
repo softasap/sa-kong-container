@@ -16,7 +16,6 @@ services:
       - 8443:8443
       - 8001:8001
       - 8444:8444
-    command: ["/usr/local/openresty/nginx/sbin/nginx", "-c", "/usr/local/kong/nginx.conf", "-p", "/usr/local/kong/"]
     entrypoint: /docker-entrypoint
  
 #    command: ['/usr/bin/dumb-init', 'nginx', '-c', '/etc/nginx/nginx.conf']

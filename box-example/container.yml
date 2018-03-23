@@ -6,7 +6,7 @@ settings:
 
 services:
    kong:
-     from: alpine:3.6
+     from: python:3-alpine3.6
      container_name: kong
      entrypoint: /docker-entrypoint
      expose:

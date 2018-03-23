@@ -2,6 +2,4 @@
 
 exec 2>&1
 
-/usr/local/bin/kong migrations up || true
-
-exec /usr/local/bin/kong start
+exec /usr/local/openresty/nginx/sbin/nginx -p /usr/local/kong -c {{kong_daemon_config}}
