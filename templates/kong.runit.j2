@@ -1,7 +1,7 @@
 #!/bin/sh
 
+KONG_NGINX_CONF=${KONG_NGINX_CONF:-{{kong_daemon_config}}}
+
 exec 2>&1
 
-/usr/local/bin/kong migrations up || true
-
-exec /usr/local/bin/kong start
+exec /usr/local/openresty/nginx/sbin/nginx -p /usr/local/kong -c $KONG_NGINX_CONF
