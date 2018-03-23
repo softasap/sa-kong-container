@@ -17,7 +17,7 @@ kong_plugins_path: /usr/local/share/lua/5.1/kong/plugins
 
 # Check those two for effective kong config used
 kong_config_path: "{{role_path}}/templates/kong_nginx_extended.conf.j2"
-kong_daemon_config: /usr/local/kong/custom.conf
+kong_nginx_config: /usr/local/kong/nginx.conf
 
 kong_nginx_template: default_nginx.template
 
