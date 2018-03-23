@@ -5,6 +5,6 @@ set -e
 export KONG_NGINX_DAEMON="off"
 
 # Those will fail for case when db is already migrated
-/usr/local/bin/kong migrations up  || true
+/usr/local/bin/kong migrations up --yes || true
 
 exec "$@"
