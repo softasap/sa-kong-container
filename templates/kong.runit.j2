@@ -5,4 +5,4 @@ export KONG_NGINX_DAEMON="off"
 
 exec 2>&1
 
-exec /usr/local/bin/kong start -p /usr/local/kong -c /etc/kong/kong.conf --run-migrations ${KONG_START_OVERRIDES}
+exec /usr/local/bin/kong start -p /usr/local/kong -c /etc/kong/kong.conf  ${KONG_START_OVERRIDES}
