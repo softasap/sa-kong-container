@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Disabling nginx daemon mode, in case if there was override in main config
+export KONG_NGINX_DAEMON="off"
+
 exec 2>&1
 
 exec /usr/local/bin/kong start -p /usr/local/kong -c /etc/kong/kong.conf --run-migrations ${KONG_START_OVERRIDES}
